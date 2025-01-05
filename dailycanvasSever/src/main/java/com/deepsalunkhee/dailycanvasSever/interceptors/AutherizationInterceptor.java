@@ -20,6 +20,7 @@ public class AutherizationInterceptor implements HandlerInterceptor {
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
             throws Exception {
         String authorizationHeader = request.getHeader("Authorization");
+        request.setAttribute("tokenStatus", false);
 
         if (authorizationHeader == null || !authorizationHeader.startsWith("Bearer ")) {
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
@@ -58,6 +59,7 @@ public class AutherizationInterceptor implements HandlerInterceptor {
                     //set emai and name in the headers in the response itself
                     request.setAttribute("email", email.toString());
                     request.setAttribute("name", name.toString());
+                    request.setAttribute("tokenStatus", true);
                     
                     return true; // Allow the request to proceed
                 } else {

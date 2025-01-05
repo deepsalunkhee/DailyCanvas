@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 import jakarta.servlet.http.HttpServletRequest;
 
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/api/v1")
 public class TestControllers {
 
     
@@ -35,6 +35,15 @@ public ResponseEntity<Map<String, String>> userEmail(HttpServletRequest request)
 
     return ResponseEntity.ok(resultResponse);
 }
+
+    @GetMapping("/tokenStatus")
+    public ResponseEntity<String> tokenStatus(HttpServletRequest request) {
+        if((boolean) request.getAttribute("tokenStatus")) {
+            return ResponseEntity.ok("Token is valid");
+        } else {
+            return ResponseEntity.badRequest().body("Token is invalid");
+        }
+    }
 
 
 

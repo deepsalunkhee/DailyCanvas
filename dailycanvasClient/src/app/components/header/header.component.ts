@@ -33,7 +33,7 @@ export class HeaderComponent implements OnInit {
 
       //after waithing for 2 second relode the window;
       setTimeout(() => {
-        window.open('/','_blank');
+        window.open('/','_self');
       }, 1000);
 
     } else if (!localStorage.getItem('token')) {
@@ -49,7 +49,7 @@ export class HeaderComponent implements OnInit {
 
   fetchEmail(): void {
     this.apiService
-      .getData('api/user-email') 
+      .getData('api/v1/user-email') 
       .then((response) => {
         this.name = response.data.name;
         console.log('User info:', response.data);
@@ -62,7 +62,7 @@ export class HeaderComponent implements OnInit {
 
   testcall():void{
     this.apiService
-      .getData('api/')
+      .getData('api/v1/')
       .then((response) => {
         console.log(response);
       })
