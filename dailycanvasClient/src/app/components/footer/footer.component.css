@@ -1,0 +1,11 @@
+.footer-container{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    padding: 5px;
+}
+
+.copy-right{
+    font-family: 'Schoolbell', system-ui;
+    font-size: large;
+}

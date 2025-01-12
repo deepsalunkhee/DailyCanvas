@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, HostListener, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { ApiService } from '../../services/api.service'; // Update path based on your folder structure
 
@@ -9,6 +9,15 @@ import { ApiService } from '../../services/api.service'; // Update path based on
 })
 export class HeaderComponent implements OnInit {
   name: string | null = null;
+  time: string = new Date().toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+  date: string = new Date().toLocaleDateString();
+  day: string = new Date().toLocaleDateString('en-US', { weekday: 'long' });
+
+  updateClock(): void {
+    setInterval(()=>{
+    this.time = new Date().toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+    }, 1000);
+  }
 
   constructor(private router: Router, private apiService: ApiService) {
     // Token handling logic
@@ -43,6 +52,7 @@ export class HeaderComponent implements OnInit {
 
   ngOnInit(): void {
     this.fetchEmail();
+      this.updateClock();
   }
 
   

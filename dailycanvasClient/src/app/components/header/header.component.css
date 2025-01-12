@@ -1,0 +1,37 @@
+.footer-container{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    padding: 10px;
+    font-family: 'Schoolbell', system-ui;
+    font-size: large;
+}
+
+.clock{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    gap: 15px;
+
+}
+
+.logout-button{
+    font-family: 'Schoolbell', system-ui;
+    font-size: small;
+    padding: 5px;
+    border: none;
+    border-bottom:  4px double red;
+    cursor: pointer;
+}
+
+.user-name{
+    border-bottom:  4px double rgb(0, 124, 12);
+}
+
+/* for small screens no need to show clock */
+
+@media (max-width: 600px) {
+    .clock{
+        display: none;
+    }
+}

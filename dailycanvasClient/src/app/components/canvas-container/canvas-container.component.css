@@ -1,0 +1,23 @@
+.main-container{
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    width: 100%;
+}
+
+app-header{
+  position: sticky;
+  top: 0;
+}
+
+.content{
+  flex: 1;
+  font-family: 'Schoolbell', system-ui;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+app-footer{
+  position: sticky;
+  bottom: 0;
+}
