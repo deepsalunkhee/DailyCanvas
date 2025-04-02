@@ -5,7 +5,7 @@ import axios from 'axios';
   providedIn: 'root'
 })
 export class ApiService {
-  private baseUrl = 'http://localhost:8080'; // Replace with your backend URL
+  private baseUrl = 'http://localhost:8080'; 
   private token = localStorage.getItem('token');
 
   constructor() {}

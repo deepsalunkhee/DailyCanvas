@@ -1,6 +1,6 @@
 import { Component, HostListener, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { ApiService } from '../../services/api.service'; // Update path based on your folder structure
+import { ApiService } from '../../services/api.service'; 
 
 @Component({
   selector: 'app-header',
@@ -52,7 +52,7 @@ export class HeaderComponent implements OnInit {
 
   ngOnInit(): void {
     this.fetchEmail();
-      this.updateClock();
+    this.updateClock();
   }
 
   
