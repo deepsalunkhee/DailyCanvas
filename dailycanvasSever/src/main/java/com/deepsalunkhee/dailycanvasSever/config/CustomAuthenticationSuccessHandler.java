@@ -3,6 +3,7 @@ package com.deepsalunkhee.dailycanvasSever.config;
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClient;
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClientService;
 import org.springframework.security.oauth2.core.OAuth2AccessToken;
+import org.springframework.security.oauth2.core.OAuth2RefreshToken;
 import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
@@ -37,10 +38,11 @@ public class CustomAuthenticationSuccessHandler implements AuthenticationSuccess
             // Extract the access token
             if (authorizedClient != null) {
                 OAuth2AccessToken accessToken = authorizedClient.getAccessToken();
+                OAuth2RefreshToken refreshToken = authorizedClient.getRefreshToken();
                 if (accessToken != null) {
                     // Redirect with token in the query parameter
                     response.sendRedirect("http://localhost:4200?provider=" + oauthToken.getAuthorizedClientRegistrationId() +
-                            "&token=" + accessToken.getTokenValue());
+                            "&token=" + accessToken.getTokenValue()+ "&refreshToken=" + refreshToken.getTokenValue());
                     return;
                 }
             }

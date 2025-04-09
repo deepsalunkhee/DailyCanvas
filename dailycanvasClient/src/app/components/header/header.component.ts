@@ -23,19 +23,26 @@ export class HeaderComponent implements OnInit {
     // Token handling logic
     const token = new URLSearchParams(window.location.search).get('token');
     const provider = new URLSearchParams(window.location.search).get('provider');
+    const refreshToken = new URLSearchParams(window.location.search).get('refreshToken');
 
     if (token && provider) {
       localStorage.setItem('token', token);
       localStorage.setItem('provider', provider);
 
+      if(refreshToken) {
+      localStorage.setItem('refreshToken',refreshToken);
+      }
+
       console.log('Token:', token);
       console.log('Provider:', provider);
+      console.log('Refresh Token:', refreshToken);
 
       // Remove the token from the URL
       this.router.navigate([], {
         queryParams: {
           token: null,
-          provider: null
+          provider: null,
+          refreshToken: null
         },
         replaceUrl: true
       });
@@ -63,6 +70,17 @@ export class HeaderComponent implements OnInit {
       .then((response) => {
         this.name = response.data.name;
         console.log('User info:', response.data);
+
+        //making sure we always have refresh token
+        if(response.data.refreshToken) {
+          localStorage.setItem('refreshToken',response.data.refreshToken);
+        }
+
+        //update the access token as it may have changed (I need to do it pretty much every time)
+
+        if(response.data.accessToken) {
+          localStorage.setItem('token',response.data.accessToken);
+        }
       })
       .catch((error) => {
         console.error('Error fetching user info', error);
@@ -72,7 +90,7 @@ export class HeaderComponent implements OnInit {
 
   testcall():void{
     this.apiService
-      .getData('api/v1/')
+      .getData('/')
       .then((response) => {
         console.log(response);
       })

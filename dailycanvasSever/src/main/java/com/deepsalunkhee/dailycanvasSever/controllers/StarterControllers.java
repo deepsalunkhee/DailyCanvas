@@ -29,6 +29,8 @@ public class StarterControllers {
         // Fetch attributes set by the middleware/interceptor
         String email = (String) request.getAttribute("email");
         String name = (String) request.getAttribute("name");
+        String refreshToken= (String) request.getHeader("refreshToken");
+        String accessToken= (String) request.getAttribute("accessToken");
 
         //check if user exits using email 
         Optional<UserModel> userstatus= UserServices.getUserByEmail(email);
@@ -36,6 +38,7 @@ public class StarterControllers {
             UserModel user = new UserModel();
             user.setEmail(email);
             user.setName(name);
+            user.setRefreshToken(refreshToken);
             UserServices.saveUser(user);
         }
 
@@ -44,6 +47,13 @@ public class StarterControllers {
         // Populate the response map
         resultResponse.put("email", email != null ? email : "");
         resultResponse.put("name", name != null ? name : "");
+
+        //making sure that user has the refresh token with them 
+        resultResponse.put("refreshToken", refreshToken != null ? refreshToken : "");
+
+        //I have send this for every request 
+        resultResponse.put("accessToken", accessToken != null ? accessToken : "");
+
 
         return ResponseEntity.ok(resultResponse);
     }

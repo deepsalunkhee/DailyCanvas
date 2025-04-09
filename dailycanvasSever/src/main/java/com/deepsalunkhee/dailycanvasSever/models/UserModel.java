@@ -23,6 +23,9 @@ public class UserModel {
      @Column(nullable = false)
      private String name;
 
+     @Column(name = "refresh_token", columnDefinition = "TEXT")
+     private String refreshToken;
+
      // Getters and Setters
 
      public UUID getId() {
@@ -47,6 +50,14 @@ public class UserModel {
 
      public void setName(String name) {
           this.name = name;
+     }
+
+     public String getRefreshToken() {
+          return refreshToken;
+     }
+
+     public void setRefreshToken(String refreshToken) {
+          this.refreshToken = refreshToken;
      }
 
      

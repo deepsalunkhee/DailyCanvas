@@ -7,11 +7,14 @@ import axios from 'axios';
 export class ApiService {
   private baseUrl = 'http://localhost:8080'; 
   private token = localStorage.getItem('token');
+  private refreshToken = localStorage.getItem('refreshToken');
 
   constructor() {}
 
   private getAuthHeader() {
-    return { Authorization: `Bearer ${this.token}` };
+    return { Authorization: `Bearer ${this.token}`,
+      RefreshToken: this.refreshToken,
+     };
   }
 
    async getTokenStatus(endpoint: string) {

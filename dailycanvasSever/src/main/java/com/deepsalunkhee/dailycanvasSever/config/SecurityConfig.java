@@ -6,6 +6,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.lang.NonNull;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
@@ -32,7 +33,7 @@ public class SecurityConfig {
         CorsConfiguration configuration = new CorsConfiguration();
         configuration.setAllowedOrigins(Arrays.asList("http://localhost:4200"));
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
-        configuration.setAllowedHeaders(Arrays.asList("Authorization", "Content-Type", "X-Requested-With"));
+        configuration.setAllowedHeaders(Arrays.asList("Authorization", "Content-Type", "X-Requested-With","refreshToken"));
         configuration.setExposedHeaders(Arrays.asList("Authorization"));
         configuration.setAllowCredentials(true);
 
@@ -42,37 +43,38 @@ public class SecurityConfig {
     }
 
     @Bean
-public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-    return http
-        .addFilterBefore(authHeaderFilter, UsernamePasswordAuthenticationFilter.class)
-        .cors(cors -> cors.configurationSource(corsConfigurationSource()))
-        .csrf(csrf -> csrf.disable())
-        .authorizeHttpRequests(auth -> {
-            auth.requestMatchers("/", "/api/auth/**").permitAll()
-                .requestMatchers(request -> (Boolean) request.getAttribute("hasAuthHeader")).permitAll()
-                .anyRequest().authenticated();
-        })
-        .oauth2Login(oauth2 -> oauth2.successHandler(customAuthenticationSuccessHandler))
-        .build();
-}
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+        return http
+                .addFilterBefore(authHeaderFilter, UsernamePasswordAuthenticationFilter.class)
+                .cors(cors -> cors.configurationSource(corsConfigurationSource()))
+                .csrf(csrf -> csrf.disable())
+                .authorizeHttpRequests(auth -> {
+                    auth.requestMatchers("/", "/api/auth/**").permitAll()
+                            .requestMatchers(request -> (Boolean) request.getAttribute("hasAuthHeader")).permitAll()
+                            .anyRequest().authenticated();
+                })
+                .oauth2Login(oauth2 -> oauth2.successHandler(customAuthenticationSuccessHandler))
+                .build();
+    }
 
     @Component
-private class AuthHeaderFilter extends OncePerRequestFilter {
+    private class AuthHeaderFilter extends OncePerRequestFilter {
 
-    @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) 
-            throws ServletException, IOException {
-        String authHeader = request.getHeader("Authorization");
-        
-        // If Authorization header is present, set attribute to signal it
-        if (authHeader != null) {
-            request.setAttribute("hasAuthHeader", true);
-        } else {
-            request.setAttribute("hasAuthHeader", false);
+        @Override
+        protected void doFilterInternal(@NonNull HttpServletRequest request, @NonNull HttpServletResponse response,
+                @NonNull FilterChain filterChain)
+                throws ServletException, IOException {
+            String authHeader = request.getHeader("Authorization");
+
+            // If Authorization header is present, set attribute to signal it
+            if (authHeader != null) {
+                request.setAttribute("hasAuthHeader", true);
+            } else {
+                request.setAttribute("hasAuthHeader", false);
+            }
+
+            // Continue to the next filter
+            filterChain.doFilter(request, response);
         }
-        
-        // Continue to the next filter
-        filterChain.doFilter(request, response);
     }
-}
 }
