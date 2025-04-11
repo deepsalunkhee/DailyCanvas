@@ -9,6 +9,8 @@ import jakarta.persistence.*;
 @Table(name = "days")
 public class DayModel {
 
+    final static int MAX_TODO_COUNT = 20;
+
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID id;
@@ -22,6 +24,9 @@ public class DayModel {
 
     @Column
     private LocalDate date;
+
+    @Column(name = "todo_count")
+    private int todoCount;
 
     // Getters and Setters
 

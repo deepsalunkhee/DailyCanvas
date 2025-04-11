@@ -20,7 +20,7 @@ public class TodoModel {
     private String content;
 
     @Column(name = "action_applies")
-    private boolean actionApplies;
+    private boolean actionApplied;
 
     @Column(name = "action_type")
     private String actionType; // "SCRATCHED" or "DONE"
@@ -33,6 +33,9 @@ public class TodoModel {
 
     @Column(name = "scratch_color")
     private String scratchColor; // "blue" or "black"
+
+    @Column
+    private int position; // Position of the todo in the list
 
 
     // Getters and Setters
@@ -61,12 +64,12 @@ public class TodoModel {
         this.content = content;
     }
 
-    public boolean isActionApplies() {
-        return actionApplies;
+    public boolean isActionApplied() {
+        return actionApplied;
     }
 
-    public void setActionApplies(boolean actionApplies) {
-        this.actionApplies = actionApplies;
+    public void setActionApplied(boolean actionApplied) {
+        this.actionApplied = actionApplied;
     }
 
     public String getActionType() {
@@ -100,5 +103,14 @@ public class TodoModel {
     public void setScratchColor(String scratchColor) {
         this.scratchColor = scratchColor;
     }
+
+    public int getPosition() {
+        return position;
+    }
+
+    public void setPosition(int position) {
+        this.position = position;
+    }
+
 
 }

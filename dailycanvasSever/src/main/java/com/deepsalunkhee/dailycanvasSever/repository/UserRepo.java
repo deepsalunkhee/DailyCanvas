@@ -10,4 +10,7 @@ import com.deepsalunkhee.dailycanvasSever.models.UserModel;
 public interface UserRepo extends JpaRepository<UserModel,UUID> {
         //custom query to find user by email that may or may not exist
         Optional<UserModel> findByEmail(String email);
+
+        //custom query to find user by id that may or may not exist
+        Optional<UserModel> findById(UUID id);
 }

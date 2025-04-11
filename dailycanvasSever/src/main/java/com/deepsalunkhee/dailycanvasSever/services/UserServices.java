@@ -1,6 +1,7 @@
 package com.deepsalunkhee.dailycanvasSever.services;
 
 import java.util.Optional;
+import java.util.UUID;
 
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,6 +26,21 @@ public class UserServices {
             logger.info("User found: {}", user.get());
         } else {
             logger.warn("No user found with email: {}", email);
+        }
+        return user;
+    }
+
+    
+    public Optional<UserModel> getUserById(String id) {
+        logger.info("Fetching user with id: {}", id);
+        // Convert String id to UUID
+         UUID uuid = UUID.fromString(id);
+         logger.info("Converted String id to UUID: {}", uuid);
+        Optional<UserModel> user = userRepo.findById(uuid);
+        if (user.isPresent()) {
+            logger.info("User found: {}", user.get());
+        } else {
+            logger.warn("No user found with id: {}", id);
         }
         return user;
     }
