@@ -10,6 +10,7 @@ import com.deepsalunkhee.dailycanvasSever.models.UserModel;
 import com.deepsalunkhee.dailycanvasSever.models.WeekModel;
 import com.deepsalunkhee.dailycanvasSever.repository.UserRepo;
 import com.deepsalunkhee.dailycanvasSever.repository.WeekRepo;
+import com.fasterxml.jackson.databind.JsonNode;
 
 @Service
 public class WeekServices {
@@ -46,5 +47,13 @@ public class WeekServices {
 
     public void deleteWeek(UUID weekId) {
         weekRepo.deleteById(weekId);
+    }
+
+     public void updateBrainSorterData(UUID weekId, String brainSorterData) {
+        WeekModel week = weekRepo.findById(weekId)
+                .orElseThrow(() -> new RuntimeException("Week not found"));
+
+        week.setBrainSorterData(brainSorterData);
+        weekRepo.save(week);
     }
 }

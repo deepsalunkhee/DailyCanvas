@@ -1,13 +1,22 @@
 package com.deepsalunkhee.dailycanvasSever.models;
 
+import java.io.IOException;
 import java.time.LocalDate;
 import java.util.UUID;
 
+import org.hibernate.annotations.Type;
+
+import com.fasterxml.jackson.databind.JsonNode;
+
 import jakarta.persistence.*;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 @Entity
 @Table(name = "weeks")
 public class WeekModel {
+
+    private static final ObjectMapper objectMapper = new ObjectMapper();
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -28,6 +37,30 @@ public class WeekModel {
 
     @Column(name = "template_type")
     private String templateType; // default_1, default_2, custom
+
+    @Column(name = "brain_sorter_data", columnDefinition = "TEXT")
+    private String brainSorterData;
+
+    public WeekModel() {
+        this.brainSorterData = """
+        {
+          "attrs": {
+            "width": "100%",
+            "height": "100%"
+          },
+          "className": "Stage",
+          "children": [
+            {
+              "className": "Layer",
+              "children": []
+            }
+          ]
+        }
+        """;
+    }
+
+    
+
 
     // Getters and Setters
 
@@ -78,6 +111,16 @@ public class WeekModel {
     public void setTemplateType(String templateType) {
         this.templateType = templateType;
     }
+
+    public String getBrainSorterData() {
+        return brainSorterData;
+    }
+
+    public void setBrainSorterData(String brainSorterData) {
+        this.brainSorterData = brainSorterData;
+    }
+
+   
 
     
 }

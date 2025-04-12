@@ -16,12 +16,14 @@ import com.deepsalunkhee.dailycanvasSever.controllers.dto.WeekDTO;
 import com.deepsalunkhee.dailycanvasSever.models.*;
 import com.deepsalunkhee.dailycanvasSever.services.*;
 
+
 @RestController
 @RequestMapping("/api/v1")
 public class WeekControllers {
 
     // creating logger for this class
     private static final Logger logger = LoggerFactory.getLogger(WeekControllers.class);
+  
 
     private final WeekServices weekServices;
     private final DayServices dayServices;
@@ -112,5 +114,36 @@ public class WeekControllers {
         logger.info("Final response: {}", response);
         return response;
     }
+
+
+    @PostMapping("/update-brain-sorter")
+    public String updateBrainSorter(@RequestBody Map<String, Object> request) {
+        try {
+            UUID weekId = UUID.fromString((String) request.get("weekId"));
+            String brainSorterData = (String) request.get("brainSorterData");
+
+            weekServices.updateBrainSorterData(weekId, brainSorterData);
+
+            return "Brain Sorter data updated successfully!";
+        } catch (Exception e) {
+            e.printStackTrace();
+            return "Failed to update Brain Sorter data.";
+        }
+    }
+
+    @GetMapping("/get-brain-sorter")
+    public String getBrainSorter(@RequestParam String weekId) {
+        try {
+            UUID id = UUID.fromString(weekId);
+            WeekModel week = weekServices.getWeeksById(id);
+            return week.getBrainSorterData();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+    
+
+
 
 }

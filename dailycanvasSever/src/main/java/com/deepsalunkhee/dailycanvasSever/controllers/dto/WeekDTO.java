@@ -1,13 +1,15 @@
 package com.deepsalunkhee.dailycanvasSever.controllers.dto;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+
+import com.fasterxml.jackson.databind.JsonNode;
 
 public class WeekDTO {
      private UUID weekId;
     private LocalDate weekStartDate;
+
     private List<DayInfo> days;
 
     public static class DayInfo {
@@ -75,4 +77,6 @@ public class WeekDTO {
     public void setDays(List<DayInfo> days) {
         this.days = days;
     }
+
+    
 }
