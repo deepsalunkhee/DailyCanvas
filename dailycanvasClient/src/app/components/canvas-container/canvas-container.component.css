@@ -3,6 +3,8 @@
     flex-direction: column;
     min-height: 100vh;
     width: 100%;
+    overflow-y: hidden;
+    overflow-x: hidden;
 }
 
 app-header{
@@ -11,13 +13,17 @@ app-header{
 }
 
 .content{
-  flex: 1;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
   font-family: 'Schoolbell', system-ui;
   padding-left: 5px;
   padding-right: 5px;
+  min-height: 86vh;
+  width: 100%;
 }
 
 app-footer{
   position: sticky;
-  bottom: 0;
+  bottom: 0px;
 }
