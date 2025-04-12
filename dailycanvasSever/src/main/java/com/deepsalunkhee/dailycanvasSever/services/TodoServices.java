@@ -40,12 +40,15 @@ public class TodoServices {
         TodoModel existing = todoRepo.findById(todoId)
                 .orElseThrow(() -> new IllegalArgumentException("Todo not found"));
 
+    
         existing.setContent(updatedTodo.getContent());
         existing.setTextColor(updatedTodo.getTextColor());
         existing.setFontSize(updatedTodo.getFontSize());
         existing.setScratchColor(updatedTodo.getScratchColor());
         existing.setActionType(updatedTodo.getActionType());
         existing.setActionApplied(updatedTodo.isActionApplied());
+        existing.setPosition(updatedTodo.getPosition());
+        
 
         return todoRepo.save(existing);
     }

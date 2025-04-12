@@ -82,4 +82,52 @@ public class TodoControllers {
 
         return dto;
     }
+
+    @PostMapping("/update-todo")
+    public TodoDTO updateTodo(@RequestBody Map<String, String> request) {
+        UUID todoId = UUID.fromString(request.get("todoId"));
+        String content = request.get("content");
+        String textColor = request.get("textColor");
+        String fontSize = request.get("fontSize");
+        int position = Integer.parseInt(request.get("position"));
+        boolean actionApplied = Boolean.parseBoolean(request.get("actionApplied"));
+        String actionType = request.get("actionType");
+        String scratchColor = request.get("scratchColor");
+       
+
+
+        logger.info("Updating Todo with ID: {}", todoId);
+
+        TodoModel todo = todoServices.getTodoById(todoId);
+        if (todo == null) {
+            logger.error("Todo not found with ID: {}", todoId);
+            return null;
+        }
+
+        todo.setContent(content);
+        todo.setTextColor(textColor);
+        todo.setFontSize(fontSize);
+        todo.setPosition(position);
+        todo.setActionApplied(actionApplied);
+        todo.setActionType(actionType);
+        todo.setScratchColor(scratchColor);
+
+        TodoModel updatedTodo = todoServices.updateTodo(todoId, todo);
+
+        TodoDTO dto = new TodoDTO(
+                updatedTodo.getId(),
+                updatedTodo.getDay().getId(),
+                updatedTodo.getContent(),
+                updatedTodo.isActionApplied(),
+                updatedTodo.getActionType(),
+                updatedTodo.getTextColor(),
+                updatedTodo.getFontSize(),
+                updatedTodo.getScratchColor(),
+                updatedTodo.getPosition()
+        );
+
+        logger.info("Todo updated successfully: {}", dto);
+
+        return dto;
+    }
 }
