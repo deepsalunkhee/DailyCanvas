@@ -35,8 +35,8 @@ public class WeekServices {
     return weekRepo.save(week);
 }
 
-    public List<WeekModel> getWeeksByUserId(UUID userId) {
-        return weekRepo.findByUserId(userId);
+    public WeekModel getWeeksById(UUID weekId) {
+        return weekRepo.findByid(weekId);
     }
 
     public WeekModel getWeekById(UUID weekId) {

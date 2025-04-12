@@ -1,44 +1,116 @@
 package com.deepsalunkhee.dailycanvasSever.controllers;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import com.deepsalunkhee.dailycanvasSever.models.WeekModel;
+import com.deepsalunkhee.dailycanvasSever.controllers.dto.TodoDTO;
+import com.deepsalunkhee.dailycanvasSever.controllers.dto.WeekDTO;
+import com.deepsalunkhee.dailycanvasSever.models.*;
 import com.deepsalunkhee.dailycanvasSever.services.*;
 
 @RestController
 @RequestMapping("/api/v1")
 public class WeekControllers {
 
-    //creating logger for this class
-     private static final Logger logger = LoggerFactory.getLogger(WeekControllers.class);
+    // creating logger for this class
+    private static final Logger logger = LoggerFactory.getLogger(WeekControllers.class);
 
-   
-     private final WeekServices weekServices;
+    private final WeekServices weekServices;
+    private final DayServices dayServices;
+    private final TodoServices todoServices;
 
     @Autowired
-    public WeekControllers(WeekServices weekServices) {
+    public WeekControllers(WeekServices weekServices, DayServices dayServices, TodoServices todoServices) {
         this.weekServices = weekServices;
+        this.dayServices = dayServices;
+        this.todoServices = todoServices;
     }
 
     @PostMapping("/create-week")
-    public WeekModel createWeek(@RequestBody Map<String, String> request) {
+    public WeekDTO createWeek(@RequestBody Map<String, String> request) {
         String email = request.get("email");
-        String startDateString = request.get("startDate"); // expected format: "2025-04-13"
+        String startDateString = request.get("startDate");
 
         LocalDate startDate = LocalDate.parse(startDateString);
-
         logger.info("Creating week for user with email: {}", email);
         logger.info("Start date: {}", startDate);
-        
 
-        return weekServices.createWeek(email, startDate);
+        WeekModel createdWeek = weekServices.createWeek(email, startDate);
+        logger.info("Week created successfully: {}", createdWeek);
+
+        String[] daysOfWeek = { "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday" };
+        List<WeekDTO.DayInfo> dayInfos = new ArrayList<>();
+
+        for (String dayName : daysOfWeek) {
+            DayModel createdDay = dayServices.createDay(createdWeek.getId(), dayName);
+            logger.info("Day created: {}", dayName);
+            List<TodoDTO> todos = new ArrayList<>(); // Initialize empty list of todos
+            dayInfos.add(new WeekDTO.DayInfo(dayName, createdDay.getId(), todos));
+        }
+
+        WeekDTO response = new WeekDTO();
+        response.setWeekId(createdWeek.getId());
+        response.setWeekStartDate(createdWeek.getStartDate());
+        response.setDays(dayInfos);
+
+        logger.info("Response: {}", response);
+
+        return response;
     }
 
+    @GetMapping("/get-a-week")
+    public WeekDTO getWeeksByUserId(@RequestParam String id) {
+        UUID userId = UUID.fromString(id);
+        logger.info("Fetching weeks for user with ID: {}", userId);
+
+        WeekModel week = weekServices.getWeeksById(userId);
+        logger.info("Week fetched: {}", week);
+
+        List<DayModel> days = dayServices.getDaysByWeekId(week.getId());
+        logger.info("Days fetched: {}", days);
+
+        List<WeekDTO.DayInfo> dayInfos = new ArrayList<>();
+        for (DayModel day : days) {
+            WeekDTO.DayInfo dayInfo = new WeekDTO.DayInfo(day.getDayOfWeek(), day.getId(), new ArrayList<>());
+            dayInfo.setDay(day.getDayOfWeek());
+            dayInfo.setDayId(day.getId());
+            dayInfo.setTodos(new ArrayList<>());
+
+            List<TodoModel> todos = todoServices.getTodosByDayId(day.getId());
+            logger.info("Todos fetched for day {}: {}", day.getDayOfWeek(), todos);
+            for (TodoModel todo : todos) {
+                TodoDTO todoDTO = new TodoDTO(
+                        todo.getId(),
+                        day.getId(),
+                        todo.getContent(),
+                        todo.isActionApplied(),
+                        todo.getActionType(),
+                        todo.getTextColor(),
+                        todo.getFontSize(),
+                        todo.getScratchColor(),
+                        todo.getPosition());
+                dayInfo.getTodos().add(todoDTO);
+            }
+
+            logger.info("DayInfo created: {}", dayInfo);
+            dayInfos.add(dayInfo);
+        }
+
+        WeekDTO response = new WeekDTO();
+        response.setWeekId(week.getId());
+        response.setWeekStartDate(week.getStartDate());
+        response.setDays(dayInfos);
+
+        logger.info("Final response: {}", response);
+        return response;
+    }
 
 }

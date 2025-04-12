@@ -62,4 +62,15 @@ public class DayModel {
         this.date = date;
     }
 
+    public int getTodoCount() {
+        return todoCount;
+    }
+
+    public void setTodoCount(int todoCount) {
+        if (todoCount > MAX_TODO_COUNT) {
+            throw new IllegalArgumentException("Todo count exceeds maximum limit of " + MAX_TODO_COUNT);
+        }
+        this.todoCount = todoCount;
+    }
+
 }

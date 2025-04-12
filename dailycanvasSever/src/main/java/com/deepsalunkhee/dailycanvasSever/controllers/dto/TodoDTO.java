@@ -1,42 +1,33 @@
-package com.deepsalunkhee.dailycanvasSever.models;
+package com.deepsalunkhee.dailycanvasSever.controllers.dto;
 
 import java.util.UUID;
 
-import jakarta.persistence.*;
-
-@Entity
-@Table(name = "todos")
-public class TodoModel {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+public class TodoDTO {
     private UUID id;
-
-    @ManyToOne
-    @JoinColumn(name = "day_id", nullable = false)
-    private DayModel day;
-
-    @Column(nullable = false, columnDefinition = "TEXT")
+    private UUID dayId;
     private String content;
-
-    @Column(name = "action_applies")
     private boolean actionApplied;
+    private String actionType;      // "SCRATCHED" or "DONE"
+    private String textColor;       // "black" or "blue"
+    private String fontSize;        // "S", "M", "L"
+    private String scratchColor;    // "blue" or "black"
+    private int position;
 
-    @Column(name = "action_type")
-    private String actionType; // "SCRATCHED" or "DONE" or "NONE"
+    // Constructor
+    public TodoDTO(UUID id, UUID dayId, String content, boolean actionApplied, String actionType, String textColor, String fontSize, String scratchColor, int position) {
+        this.id = id;
+        this.dayId = dayId;
+        this.content = content;
+        this.actionApplied = actionApplied;
+        this.actionType = actionType;
+        this.textColor = textColor;
+        this.fontSize = fontSize;
+        this.scratchColor = scratchColor;
+        this.position = position;
+    }
 
-    @Column(name = "text_color")
-    private String textColor; // "black" or "blue"
-
-    @Column(name = "font_size")
-    private String fontSize; // "S", "M", "L"
-
-    @Column(name = "scratch_color")
-    private String scratchColor; // "blue" or "black" or "none"
-
-    @Column
-    private int position; // Position of the todo in the list
-
+    public TodoDTO() {
+    }
 
     // Getters and Setters
 
@@ -48,12 +39,12 @@ public class TodoModel {
         this.id = id;
     }
 
-    public DayModel getDay() {
-        return day;
+    public UUID getDayId() {
+        return dayId;
     }
 
-    public void setDay(DayModel day) {
-        this.day = day;
+    public void setDayId(UUID dayId) {
+        this.dayId = dayId;
     }
 
     public String getContent() {
@@ -111,6 +102,4 @@ public class TodoModel {
     public void setPosition(int position) {
         this.position = position;
     }
-
-
 }

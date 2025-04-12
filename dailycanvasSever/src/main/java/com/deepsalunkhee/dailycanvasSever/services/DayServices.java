@@ -21,14 +21,19 @@ public class DayServices {
         this.weekRepo = weekRepo;
     }
 
-    public DayModel createDay(UUID weekId, DayModel day) {
-        Optional<WeekModel> weekOptional = weekRepo.findById(weekId);
-        if (weekOptional.isEmpty()) {
-            throw new IllegalArgumentException("Week not found");
-        }
+    public DayModel createDay(UUID weekId, String dayOfWeek) {
+        WeekModel week = weekRepo.findById(weekId)
+                .orElseThrow(() -> new IllegalArgumentException("Week not found"));
 
-        day.setWeek(weekOptional.get());
-        return dayRepo.save(day);
+        DayModel newday = new DayModel();
+        newday.setWeek(week);
+        newday.setDayOfWeek(dayOfWeek);
+        newday.setTodoCount(0); 
+
+        DayModel cratedDay=dayRepo.save(newday);
+
+        return cratedDay;
+       
     }
 
     public List<DayModel> getDaysByWeekId(UUID weekId) {
@@ -42,6 +47,19 @@ public class DayServices {
     public DayModel getDayById(UUID dayId) {
         return dayRepo.findById(dayId)
                 .orElseThrow(() -> new IllegalArgumentException("Day not found"));
+    }
+
+    public DayModel updateDay(UUID dayId, DayModel updatedDay) {
+        Optional<DayModel> existingDayOptional = dayRepo.findById(dayId);
+        if (existingDayOptional.isEmpty()) {
+            throw new IllegalArgumentException("Day not found");
+        }
+
+        DayModel existingDay = existingDayOptional.get();
+        existingDay.setDayOfWeek(updatedDay.getDayOfWeek());
+        existingDay.setTodoCount(updatedDay.getTodoCount());
+
+        return dayRepo.save(existingDay);
     }
 
 }
