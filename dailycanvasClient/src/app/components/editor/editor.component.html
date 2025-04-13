@@ -1,1 +1,73 @@
-<p>editor works!</p>
+<div class="editor-container">
+    <div class="editor-menu">
+      <div class="menu-section" *ngFor="let sectionKey of sectionKeys">
+        <h4 class="menu-title">
+          {{menuConfig[sectionKey].title}}
+        </h4>
+        <div class="option-group">
+          <button 
+            *ngFor="let option of menuConfig[sectionKey].options; let i = index"
+            class="option-btn" 
+            [class.active]="isActive(sectionKey, option)"
+            (click)="updateState(sectionKey, option)"
+            [ngClass]="{
+              'color-option': sectionKey === 'fontColor',
+              'black': sectionKey === 'fontColor' && option === 'black',
+              'blue': sectionKey === 'fontColor' && option === 'blue'
+            }">
+            {{option}}
+          </button>
+        </div>
+      </div>
+    </div>
+  
+    <div class="todo-editor">
+      <!-- Todo input form -->
+      <div class="todo-input-container" *ngIf="editorState['mode'] === 'write'">
+        <input 
+          type="text" 
+          [(ngModel)]="newTodoContent" 
+          (keyup.enter)="editingTodoId ? updateTodoContent() : addTodo()"
+          [placeholder]="todos.length >= maxTodos ? 'Maximum todos reached' : 'Type your todo here.'"
+          class="todo-input"
+          [ngClass]="{
+            'font-s': editorState['fontSize'] === 'S',
+            'font-m': editorState['fontSize'] === 'M',
+            'font-l': editorState['fontSize'] === 'L',
+            'color-black': editorState['fontColor'] === 'black',
+            'color-blue': editorState['fontColor'] === 'blue'
+          }"
+          [disabled]="todos.length >= maxTodos"
+          autofocus
+        >
+        <div class="todo-actions" *ngIf="editingTodoId">
+          <button (click)="updateTodoContent()" class="save-btn">Save</button>
+          <button (click)="cancelEdit()" class="cancel-btn">Cancel</button>
+        </div>
+      </div>
+
+      <!-- Todo list -->
+      <div class="todo-list-container">
+        <div class="todo-list">
+            <div *ngFor="let todo of todos; trackBy: trackById"
+                 [@fadeInOut]
+                 [@strikeThrough]="{value: todo.actionType, params: {color: getStrikeColor(todo)}}"
+                 [ngClass]="getTodoClasses(todo)"
+                 (click)="handleTodoClick(todo)">
+              <span class="todo-content">{{todo.content}}</span>
+              <button class="delete-btn" (click)="deleteTask(todo, $event)">×</button>
+            </div>
+          </div>
+      </div>
+
+      <p class="editor-placeholder" *ngIf="todos.length === 0 && editorState['mode'] === 'write'">
+        Start writing your todo items here...
+      </p>
+      <p class="editor-placeholder" *ngIf="todos.length === 0 && editorState['mode'] === 'action'">
+        Select items to {{editorState['actionType']}}...
+      </p>
+      <p class="todo-count" *ngIf="todos.length > 0">
+        {{todos.length}}/{{maxTodos}} todos
+      </p>
+    </div>
+  </div>
