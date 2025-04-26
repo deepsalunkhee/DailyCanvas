@@ -1,0 +1,44 @@
+.create-week-wrapper {
+    background-color: #fff8f0;
+    border: 1px solid #d2b48c;
+    padding: 2rem;
+    border-radius: 12px;
+    font-family: 'Schoolbell', system-ui;
+    box-shadow: 4px 4px 12px rgba(0,0,0,0.2);
+    text-align: center;
+  }
+  
+  input[type="date"] {
+    padding: 0.2rem;
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+    border: 1px solid #bfb5a2;
+    border-radius: 6px;
+    font-family: inherit;
+  }
+  
+  .confirm-button {
+    background-color: #e8d3b8;
+    border: none;
+    padding: 0.2rem 0.2rem;
+    border-radius: 8px;
+    font-size: 1.1rem;
+    font-family: inherit;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  
+  .confirm-button:hover {
+    background-color: #d6c1a6;
+  }
+
+  .date-picker-container {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+   
+    
+  }
+  

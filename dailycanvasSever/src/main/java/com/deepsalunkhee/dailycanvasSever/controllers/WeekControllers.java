@@ -37,8 +37,10 @@ public class WeekControllers {
     }
 
     @PostMapping("/create-week")
-    public WeekDTO createWeek(@RequestBody Map<String, String> request) {
-        String email = request.get("email");
+    public WeekDTO createWeek(@RequestAttribute("email") String attributeEmail, @RequestBody Map<String, String> request) {
+       
+        logger.info("Request body: {}", request);
+        String email = attributeEmail;
         String startDateString = request.get("startDate");
 
         LocalDate startDate = LocalDate.parse(startDateString);

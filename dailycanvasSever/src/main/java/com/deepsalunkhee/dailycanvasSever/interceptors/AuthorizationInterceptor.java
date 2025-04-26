@@ -79,6 +79,8 @@ public class AuthorizationInterceptor implements HandlerInterceptor {
         request.setAttribute("name", name);
         request.setAttribute("tokenStatus", true);
 
+        log.info(" Interceptor: Token validated successfully, email: {}, name: {}", email, name);
+
         return true;
     }
 

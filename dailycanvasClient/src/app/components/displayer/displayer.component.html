@@ -1,3 +1,11 @@
 <div class="displayer-container">
-    this is the displayer component
+    <div class="displayer-header">
+        <h3>week name/date</h3>
+        <button (click)="createWeek()" class="create-week-button">+</button>
+    </div>
+
+    <!-- ------------------------------------------ -->
+    <div  *ngIf="cf" class="create-week-container">
+        <app-create-week></app-create-week>
+    </div>
 </div>

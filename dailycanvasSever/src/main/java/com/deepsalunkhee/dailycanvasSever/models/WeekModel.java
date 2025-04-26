@@ -1,22 +1,20 @@
 package com.deepsalunkhee.dailycanvasSever.models;
 
-import java.io.IOException;
+
 import java.time.LocalDate;
 import java.util.UUID;
 
-import org.hibernate.annotations.Type;
 
-import com.fasterxml.jackson.databind.JsonNode;
 
 import jakarta.persistence.*;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+
 
 @Entity
 @Table(name = "weeks")
 public class WeekModel {
 
-    private static final ObjectMapper objectMapper = new ObjectMapper();
+   
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
