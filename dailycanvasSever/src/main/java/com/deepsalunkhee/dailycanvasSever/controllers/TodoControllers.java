@@ -85,7 +85,7 @@ public class TodoControllers {
 
     @PostMapping("/update-todo")
     public TodoDTO updateTodo(@RequestBody Map<String, String> request) {
-        UUID todoId = UUID.fromString(request.get("todoId"));
+        UUID id = UUID.fromString(request.get("id"));
         String content = request.get("content");
         String textColor = request.get("textColor");
         String fontSize = request.get("fontSize");
@@ -96,11 +96,11 @@ public class TodoControllers {
        
 
 
-        logger.info("Updating Todo with ID: {}", todoId);
+        logger.info("Updating Todo with ID: {}", id);
 
-        TodoModel todo = todoServices.getTodoById(todoId);
+        TodoModel todo = todoServices.getTodoById(id);
         if (todo == null) {
-            logger.error("Todo not found with ID: {}", todoId);
+            logger.error("Todo not found with ID: {}", id);
             return null;
         }
 
@@ -112,7 +112,7 @@ public class TodoControllers {
         todo.setActionType(actionType);
         todo.setScratchColor(scratchColor);
 
-        TodoModel updatedTodo = todoServices.updateTodo(todoId, todo);
+        TodoModel updatedTodo = todoServices.updateTodo(id, todo);
 
         TodoDTO dto = new TodoDTO(
                 updatedTodo.getId(),
@@ -129,5 +129,26 @@ public class TodoControllers {
         logger.info("Todo updated successfully: {}", dto);
 
         return dto;
+    }
+
+    @PostMapping("/delete-todo")
+    public void deleteTodo(@RequestBody Map<String, String> request) {
+        UUID id = UUID.fromString(request.get("id"));
+        logger.info("Deleting Todo with ID: {}", id);
+
+        TodoModel todo = todoServices.getTodoById(id);
+        if (todo == null) {
+            logger.error("Todo not found with ID: {}", id);
+            return;
+        }
+
+        //update the todo count of the day
+        DayModel day = todo.getDay();
+        day.setTodoCount((day.getTodoCount() - 1));
+        dayServices.updateDay(day.getId(), day);
+
+        todoServices.deleteTodo(id);
+        logger.info("Todo deleted successfully with ID: {}", id);
+
     }
 }

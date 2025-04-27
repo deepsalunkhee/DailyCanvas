@@ -5,12 +5,26 @@ import { EditorComponent } from "../editor/editor.component";
 import { DisplayerComponent } from "../displayer/displayer.component";
 import { ApiService } from '../../services/api.service';
 
+interface Todo {
+  id?: string;
+  dayId: string;
+  content: string;
+  actionApplied: boolean;
+  actionType: string | null; // "DONE" or "SCRATCHED" or null
+  textColor: string; // "black" or "blue"
+  fontSize: string; // "S", "M", "L"
+  scratchColor: string | null; // "blue" or "black" or null
+  position: number;
+}
+
 @Component({
   selector: 'app-canvas-container',
   imports: [HeaderComponent, FooterComponent, EditorComponent, DisplayerComponent],
   templateUrl: './canvas-container.component.html',
   styleUrl: './canvas-container.component.css'
 })
+
+
 export class CanvasContainerComponent implements OnInit {
 
   apiService: ApiService;
@@ -38,7 +52,7 @@ export class CanvasContainerComponent implements OnInit {
     this.latestWeek = "";
     this.activeWeek = "";
 
-    console.log("Sunday of this week:", this.currentDate);
+    //console.log("Sunday of this week:", this.currentDate);
 
   }
 
@@ -70,7 +84,7 @@ export class CanvasContainerComponent implements OnInit {
 
       this.latestWeek = this.weekList[0].startDate;
 
-      console.log("weekList", this.weekList);
+      //console.log("weekList", this.weekList);
     } catch (error) {
       console.error("Error fetching data:", error);
       return;
@@ -94,7 +108,7 @@ export class CanvasContainerComponent implements OnInit {
       }
 
       if (id) {
-        console.log("loading the curr week ", currWeek);
+        //console.log("loading the curr week ", currWeek);
         this.activeWeek=id;
         this.loadWeek(id);
       } else {
@@ -117,11 +131,106 @@ export class CanvasContainerComponent implements OnInit {
     try {
       const data = await this.apiService.getData("api/v1/get-a-week?id=" + WeekId);
       this.weekData = data.data;
-      console.log("weekData", this.weekData);
+      //console.log("weekData", this.weekData);
     } catch (error) {
       console.error("Error fetching data:", error);
       return;
     }
+  }
+
+  updateTodo(todo:Todo){
+    //update localy
+    if (!this.weekData || !Array.isArray((this.weekData as any).days)) return;
+
+    const days = (this.weekData as any).days;
+  
+    const day = days.find((d: any) => d.dayId === todo.dayId);
+    if (day) {
+      const index = day.todos.findIndex((t: Todo) => t.id === todo.id);
+      if (index !== -1) {
+        day.todos[index] = todo; // update the object
+      } else {
+        console.error("Todo not found to update:", todo.id);
+      }
+    } else {
+      console.error("Day not found for dayId:", todo.dayId);
+    }
+   
+    
+
+    //update the db
+
+    try{
+      this.apiService.postData("api/v1/update-todo", todo).then((response) => {
+        console.log("Todo updated successfully:", response);
+      }).catch((error) => {
+        console.error("Error updating todo:", error);
+      });
+
+    }catch(error){
+      console.error("Error updating todo:", error);
+      return;
+    }
+
+  }
+
+  saveTodo(todo:Todo){
+
+    //update localy
+    if (!this.weekData || !Array.isArray((this.weekData as any).days)) return;
+
+    const days = (this.weekData as any).days;
+
+    const day = days.find((d: any) => d.dayId === todo.dayId);
+    if (day) {
+      // Insert new Todo
+      day.todos.push(todo);
+    } else {
+      console.error("Day not found for dayId:", todo.dayId);
+    }
+
+    //update the db
+    try{
+      this.apiService.postData("api/v1/create-todo", todo).then((response) => {
+        console.log("Todo created successfully:", response);
+      }).catch((error) => {
+        console.error("Error creating todo:", error);
+      });
+    }catch(error){
+      console.error("Error creating todo:", error);
+      return;
+    }
+  }
+
+
+  deleteTodo(todo:Todo){
+
+    //locally
+    if (!this.weekData || !Array.isArray((this.weekData as any).days)) return;
+
+    const days = (this.weekData as any).days;
+  
+    const day = days.find((d: any) => d.dayId === todo.dayId);
+    if (day) {
+      day.todos = day.todos.filter((t: Todo) => t.id !== todo.id);
+    } else {
+      console.error("Day not found for dayId:", todo.dayId);
+    }
+
+    //update the db
+
+    try{
+      this.apiService.postData("api/v1/delete-todo", todo).then((response) => {
+        console.log("Todo deleted successfully:", response);
+      }).catch((error) => {
+        console.error("Error deleting todo:", error);
+      });
+    }catch(error){
+      console.error("Error deleting todo:", error);
+      return;
+    }
+
+
   }
 
 

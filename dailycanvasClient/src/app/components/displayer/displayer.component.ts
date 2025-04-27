@@ -28,7 +28,7 @@ export class DisplayerComponent implements OnInit,OnChanges {
     ngOnChanges(changes: SimpleChanges): void {
       if (changes['weekData'] && changes['weekData'].currentValue) {
         this.Data = changes['weekData'].currentValue;
-        console.log("week data from parent", this.Data);
+        //console.log("week data from parent", this.Data);
       }
     }
 

@@ -4,6 +4,9 @@
       <div class="left-container">
         <app-editor
         [weekData]="weekData"
+        (deleteTodo)="deleteTodo($event)"
+        (saveTodo)="saveTodo($event)"
+        (updateTodo)="updateTodo($event)"
         ></app-editor>
     </div>
     <div class="right-container">
