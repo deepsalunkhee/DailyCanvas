@@ -6,6 +6,11 @@
 
     <!-- ------------------------------------------ -->
     <div  *ngIf="cf" class="create-week-container">
-        <app-create-week  (closeModal)="createWeek()"></app-create-week>
+        <app-create-week  
+        (closeModal)="createWeek()"
+        [latestWeek]="latestWeek"
+        (reloadWeekList)="reloadList()"
+        
+        ></app-create-week>
     </div>
 </div>

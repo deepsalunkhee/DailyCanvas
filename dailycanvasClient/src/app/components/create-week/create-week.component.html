@@ -1,17 +1,20 @@
 <div class="create-week-wrapper">
   <h2>Create a New Week 📅</h2>
+
   <div class="date-picker-container">
-    <label for="week-date">Select Sunday:</label>
+    <label for="week-date">Sunday of week:</label>
     <input
       type="date"
       id="week-date"
+      [value]="selectedDate" 
       [min]="allowedDate | date : 'yyyy-MM-dd'"
       [max]="allowedDate | date : 'yyyy-MM-dd'"
-      (change)="onDateChange($event)"
+      disabled
     />
   </div>
 
   <button class="confirm-button" (click)="createWeek()">Create Week</button>
+
   <div *ngIf="loader" class="loader">
     creating week...
   </div>

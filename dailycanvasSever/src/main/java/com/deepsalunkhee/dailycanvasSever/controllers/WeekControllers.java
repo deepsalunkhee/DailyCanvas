@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.UUID;
 
 import org.slf4j.Logger;
@@ -12,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import com.deepsalunkhee.dailycanvasSever.controllers.dto.TodoDTO;
+import com.deepsalunkhee.dailycanvasSever.controllers.dto.WeeKListItemDTO;
 import com.deepsalunkhee.dailycanvasSever.controllers.dto.WeekDTO;
 import com.deepsalunkhee.dailycanvasSever.models.*;
 import com.deepsalunkhee.dailycanvasSever.services.*;
@@ -28,12 +30,14 @@ public class WeekControllers {
     private final WeekServices weekServices;
     private final DayServices dayServices;
     private final TodoServices todoServices;
+    private final UserServices userServices;
 
     @Autowired
-    public WeekControllers(WeekServices weekServices, DayServices dayServices, TodoServices todoServices) {
+    public WeekControllers(WeekServices weekServices, DayServices dayServices, TodoServices todoServices, UserServices userServices) {
         this.weekServices = weekServices;
         this.dayServices = dayServices;
         this.todoServices = todoServices;
+        this.userServices = userServices;
     }
 
     @PostMapping("/create-week")
@@ -143,6 +147,40 @@ public class WeekControllers {
             e.printStackTrace();
             return null;
         }
+    }
+
+    @GetMapping("/get-week-list")
+    public List<WeeKListItemDTO> getWeekList(@RequestAttribute("email") String email) {
+        logger.info("Fetching week list for user with email: {}", email);
+
+        //get the user by email
+        Optional<UserModel> user = userServices.getUserByEmail(email);
+
+        if (user.isPresent()) {
+            List<WeekModel> weeks = user.get().getWeeks();
+            logger.info("Weeks fetched: {}", weeks);
+
+            List<WeeKListItemDTO> weekList = new ArrayList<>();
+            for (WeekModel week : weeks) {
+                WeeKListItemDTO weekItem = new WeeKListItemDTO(
+                        week.getId().toString(),
+                        week.getStartDate().toString(),
+                        week.getWeekName(),
+                        week.getNote(),
+                        week.getTemplateType()
+                );
+                weekList.add(weekItem);
+            }
+
+            logger.info("Week list created: {}", weekList);
+            return weekList;
+        } else {
+            logger.warn("User not found with email: {}", email);
+            return new ArrayList<>();
+        }
+
+
+        
     }
     
 

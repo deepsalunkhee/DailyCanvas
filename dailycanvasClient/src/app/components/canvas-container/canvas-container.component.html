@@ -5,7 +5,11 @@
         <app-editor ></app-editor>
     </div>
     <div class="right-container">
-      <app-displayer></app-displayer>
+      <app-displayer 
+      [latestWeek]="latestWeek"
+      (reloadWeekList)="loadWeekList()"
+      
+      ></app-displayer>
     </div>
     </div>
     <app-footer></app-footer>

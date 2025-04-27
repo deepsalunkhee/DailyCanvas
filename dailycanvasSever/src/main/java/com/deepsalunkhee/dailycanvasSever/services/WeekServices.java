@@ -45,6 +45,8 @@ public class WeekServices {
                 .orElseThrow(() -> new IllegalArgumentException("Week not found"));
     }
 
+     
+
     public void deleteWeek(UUID weekId) {
         weekRepo.deleteById(weekId);
     }
