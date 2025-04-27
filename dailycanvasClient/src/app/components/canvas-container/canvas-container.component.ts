@@ -19,11 +19,9 @@ export class CanvasContainerComponent implements OnInit {
   currentDate: string;
   latestWeek: string;
 
-
-
-
   //user data
   weekList: any[] = [];
+  weekData: {} = {};
 
 
   constructor(apiService: ApiService) {
@@ -109,7 +107,8 @@ export class CanvasContainerComponent implements OnInit {
   async loadWeek(WeekId: string) {
     try {
       const data = await this.apiService.getData("api/v1/get-a-week?id=" + WeekId);
-      console.log("week", data.data);
+      this.weekData = data.data;
+      console.log("weekData", this.weekData);
     } catch (error) {
       console.error("Error fetching data:", error);
       return;

@@ -27,7 +27,7 @@ app-footer {
 .left-container,
 .right-container {
   height: 97%;
-  overflow-y: auto;
+  overflow-y: hidden;
 }
 
 .left-container {

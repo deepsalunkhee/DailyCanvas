@@ -2,11 +2,14 @@
     <app-header></app-header>
     <div class="content">
       <div class="left-container">
-        <app-editor ></app-editor>
+        <app-editor
+        [weekData]="weekData"
+        ></app-editor>
     </div>
     <div class="right-container">
       <app-displayer 
       [latestWeek]="latestWeek"
+      [weekData]="weekData"
       (reloadWeekList)="loadWeekList()"
       
       ></app-displayer>

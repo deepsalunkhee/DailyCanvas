@@ -10,7 +10,11 @@ import { ApiService } from '../../services/api.service';
 export class HeaderComponent implements OnInit {
   name: string | null = null;
   time: string = new Date().toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
-  date: string = new Date().toLocaleDateString();
+  date: string = new Date().toLocaleDateString('en-GB', {
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit'
+  });
   day: string = new Date().toLocaleDateString('en-US', { weekday: 'long' });
 
   updateClock(): void {

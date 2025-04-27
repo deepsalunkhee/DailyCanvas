@@ -1,16 +1,43 @@
 <div class="displayer-container">
     <div class="displayer-header">
-        <h3>week name/date</h3>
-        <button (click)="createWeek()" class="create-week-button">+</button>
+      <h4 *ngIf="Data && Data.weekId; else loading" class="title">{{ formatWeekRange(Data.weekStartDate) }}</h4>
+      <button (click)="createWeek()" class="create-week-button">+</button>
     </div>
-
-    <!-- ------------------------------------------ -->
-    <div  *ngIf="cf" class="create-week-container">
-        <app-create-week  
+    <div class="todos-container" *ngIf="Data && Data.days && Data.days.length">
+      <!-- Use the orderDays pipe to ensure Sunday to Saturday order -->
+      <div class="day-column" *ngFor="let day of orderDays(Data.days)">
+        <div class="day-header">{{ day.day }}</div>
+  
+        <div class="todos-list">
+          <div
+            class="todo-item"
+            *ngFor="let todo of getNormalizedTodos(day.todos)"
+            [class.empty-todo]="!todo.content"
+            [ngStyle]="{
+              'color': todo.textColor,
+              'font-size': todo.fontSize === 'S' || todo.fontSize === 's' ? '12px' : todo.fontSize === 'M' || todo.fontSize === 'm' ? '16px' : '20px',
+              'text-decoration': todo.actionType === 'SCRATCHED' ? 'line-through' : 'none',
+              'text-decoration-color': todo.actionType === 'SCRATCHED' ? (todo.scratchColor === 'black' ? 'black' : 'blue') : 'none',
+              'background-color': todo.actionType === 'DONE' ? 'lightgreen' : 'transparent'
+            }"
+          >
+            {{ todo.content || 'Empty' }}
+            <span *ngIf="todo.actionType === 'DONE'"> ✅</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  
+    <!-- Loading template -->
+    <ng-template #loading>
+      <div class="create-week-container">loading . . .</div>
+    </ng-template>
+  
+    <div *ngIf="cf" class="create-week-container">
+      <app-create-week
         (closeModal)="createWeek()"
         [latestWeek]="latestWeek"
         (reloadWeekList)="reloadList()"
-        
-        ></app-create-week>
+      ></app-create-week>
     </div>
-</div>
+  </div>

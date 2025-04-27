@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { animate, style, transition, trigger, state } from '@angular/animations';
 import { FormsModule } from '@angular/forms';
@@ -63,6 +63,7 @@ interface MenuConfig {
   ]
 })
 export class EditorComponent implements OnInit {
+  @Input() weekData!: {};
   @Input() todos: Todo[] = [];
   @Output() saveTodo = new EventEmitter<Todo>();
   @Output() updateTodo = new EventEmitter<Todo>();
