@@ -13,6 +13,8 @@ import { ApiService } from '../../services/api.service';
 })
 export class CreateWeekComponent {
   @Input() lastWeekEndDate: Date | null = null; // pareent will pass this will do this later
+  //out put that will close the create week modal
+  @Output() closeModal = new EventEmitter<void>();
 
   apiService: ApiService;
   loader: boolean = false;
@@ -68,10 +70,12 @@ export class CreateWeekComponent {
       const createWeetStatus = await this.apiService.postData('api/v1/create-week', { startDate: this.selectedDate });
       if (createWeetStatus) {
         alert('Week created successfully!');
+        this.closeModal.emit(); // Emit event to close the modal
         this.selectedDate = ''; // Reset the selected date
       } else {
         alert('Failed to create week!');
       }
+      
     } catch (error) {
       console.error('Error creating week:', error);
       alert('An error occurred while creating the week. Please try again later.');

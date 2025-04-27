@@ -6,6 +6,6 @@
 
     <!-- ------------------------------------------ -->
     <div  *ngIf="cf" class="create-week-container">
-        <app-create-week></app-create-week>
+        <app-create-week  (closeModal)="createWeek()"></app-create-week>
     </div>
 </div>
