@@ -1,6 +1,9 @@
 <div class="displayer-container">
     <div class="displayer-header">
-      <h4 *ngIf="Data && Data.weekId; else loading" class="title">{{ formatWeekRange(Data.weekStartDate) }}</h4>
+      <h4 *ngIf="Data && Data.weekId; else loading" class="title">
+        {{ formatWeekRange(Data.weekStartDate) }}
+        <button (click)="refreshWeek()" class="refresh-week-button">⟳</button>
+    </h4>
       <button (click)="createWeek()" class="create-week-button">+</button>
     </div>
     <div class="todos-container" *ngIf="Data && Data.days && Data.days.length">

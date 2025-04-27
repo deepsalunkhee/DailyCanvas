@@ -14,6 +14,7 @@ export class DisplayerComponent implements OnInit,OnChanges {
    @Input() latestWeek!: string ;//latest week date
    @Input() weekData!: {}; // Data for the week to be displayed
    @Output() reloadWeekList = new EventEmitter<void>(); // Event emitter to notify parent component
+   @Output() refreshWeekflag = new EventEmitter<void>(); // Event emitter to notify parent component
 
    Data: any = {};//week data
 
@@ -33,6 +34,12 @@ export class DisplayerComponent implements OnInit,OnChanges {
 
     createWeek(){
         this.cf = !this.cf;
+    }
+
+    refreshWeek(){
+      this.Data={};
+      console.log("refresh week list from displayer")
+      this.refreshWeekflag.emit(); // Emit the event to notify parent component
     }
 
     reloadList(){

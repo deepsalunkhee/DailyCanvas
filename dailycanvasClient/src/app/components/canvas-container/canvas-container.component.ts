@@ -18,6 +18,7 @@ export class CanvasContainerComponent implements OnInit {
   //get the date of sunday of current week
   currentDate: string;
   latestWeek: string;
+  activeWeek: string;
 
   //user data
   weekList: any[] = [];
@@ -35,6 +36,7 @@ export class CanvasContainerComponent implements OnInit {
     this.currentDate = today.toISOString().split('T')[0];
 
     this.latestWeek = "";
+    this.activeWeek = "";
 
     console.log("Sunday of this week:", this.currentDate);
 
@@ -48,6 +50,10 @@ export class CanvasContainerComponent implements OnInit {
     } else {
       alert("you should create a week first 😊")
     }
+  }
+
+  refreshWeek(){
+    this.loadWeek(this.activeWeek);
   }
 
 
@@ -89,6 +95,7 @@ export class CanvasContainerComponent implements OnInit {
 
       if (id) {
         console.log("loading the curr week ", currWeek);
+        this.activeWeek=id;
         this.loadWeek(id);
       } else {
         console.error("No matching week found for the current week.");
@@ -98,8 +105,10 @@ export class CanvasContainerComponent implements OnInit {
       id = this.weekList[0].weekId;
       console.log("loading latest week ", id);
 
-      if (id)
+      if (id){
+        this.activeWeek=id;
         this.loadWeek(id);
+      }
     }
 
   }
