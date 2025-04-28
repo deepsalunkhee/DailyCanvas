@@ -3,8 +3,12 @@
       <h4 *ngIf="Data && Data.weekId; else loading" class="title">
         {{ formatWeekRange(Data.weekStartDate) }}
         <button (click)="refreshWeek()" class="refresh-week-button">⟳</button>
+        <button (click)="searchWeek()" class="refresh-week-button">🔎</button>
     </h4>
+    
       <button (click)="createWeek()" class="create-week-button">+</button>
+      
+    
     </div>
     <div class="todos-container" *ngIf="Data && Data.days && Data.days.length">
       <!-- Use the orderDays pipe to ensure Sunday to Saturday order -->
@@ -43,4 +47,40 @@
         (reloadWeekList)="reloadList()"
       ></app-create-week>
     </div>
+
+    <div class="search-week" *ngIf="searchFlag">
+  
+      <!-- Close button -->
+      
+    
+      <!-- Search input -->
+       <div class="search-bar">
+        <input
+        type="text"
+        placeholder="Search by start date ..."
+        [(ngModel)]="searchText"
+        (input)="onSearchInputChange()"
+        class="search-input"
+      />
+      <button class="close-btn" (click)="searchWeek()">❌</button>
+       </div>
+     
+      
+      <!-- Weeks list -->
+      <div class="weeks-list">
+        <div
+          class="week-item"
+          *ngFor="let week of filteredWeeks"
+          (click)="selectWeek(week)"
+        >
+          📅 {{ week.startDate }}
+        </div>
+    
+        <div *ngIf="filteredWeeks.length === 0" class="no-results">
+          No matching weeks found.
+        </div>
+      </div>
+    </div>
+    
+    
   </div>

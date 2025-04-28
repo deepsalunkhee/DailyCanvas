@@ -13,8 +13,10 @@
       <app-displayer 
       [latestWeek]="latestWeek"
       [weekData]="weekData"
+      [weekList]="weekList"
       (reloadWeekList)="loadWeekList()"
       (refreshWeekflag)="refreshWeek()"
+      (loadWeek)="loadWeek($event)"
       
       ></app-displayer>
     </div>

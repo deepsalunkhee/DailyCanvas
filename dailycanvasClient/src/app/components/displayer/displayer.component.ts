@@ -1,11 +1,12 @@
 import { Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges } from '@angular/core';
 import { CreateWeekComponent } from "../create-week/create-week.component";
 import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 
 
 @Component({
   selector: 'app-displayer',
-  imports: [CreateWeekComponent,CommonModule],
+  imports: [CreateWeekComponent,CommonModule,FormsModule],
   templateUrl: './displayer.component.html',
   styleUrl: './displayer.component.css'
 })
@@ -13,12 +14,18 @@ export class DisplayerComponent implements OnInit,OnChanges {
 
    @Input() latestWeek!: string ;//latest week date
    @Input() weekData!: {}; // Data for the week to be displayed
+   @Input() weekList!: any[]; // List of weeks
    @Output() reloadWeekList = new EventEmitter<void>(); // Event emitter to notify parent component
    @Output() refreshWeekflag = new EventEmitter<void>(); // Event emitter to notify parent component
+   @Output() loadWeek = new EventEmitter<string>(); // Event emitter to notify parent component
 
    Data: any = {};//week data
+   Weeks: any[] = [];//week list
+   searchText: string = ''; // Holds the input text during search
+filteredWeeks: any[] = []; // Weeks to show while searching
 
    cf:boolean = false;//create week flag
+   searchFlag:boolean = false;//search week flag
 
 
    ngOnInit() {
@@ -27,10 +34,20 @@ export class DisplayerComponent implements OnInit,OnChanges {
 
     ngOnChanges(changes: SimpleChanges): void {
       if (changes['weekData'] && changes['weekData'].currentValue) {
+
         this.Data = changes['weekData'].currentValue;
         //console.log("week data from parent", this.Data);
         
-       
+      }
+
+      if (changes['weekList'] && changes['weekList'].currentValue) {
+
+        if(this.weekList.length==1 && this.Weeks.length==0){
+          this.selectWeek(this.weekList[0]);
+        }
+        this.Weeks = changes['weekList'].currentValue;
+        console.log("week list from parent", this.Weeks);
+        
       }
     }
 
@@ -153,6 +170,30 @@ export class DisplayerComponent implements OnInit,OnChanges {
       }
       
       return Math.max(maxCount , 5); // Default to 5 if no todos exist
+    }
+
+    searchWeek() {
+      this.searchFlag = !this.searchFlag; // Toggle search mode
+      this.filteredWeeks = this.Weeks; // Initially show all weeks
+    }
+    
+    onSearchInputChange() {
+      const lowerSearch = this.searchText.toLowerCase();
+    
+      this.filteredWeeks = this.Weeks.filter(week => {
+        const startDateMatch = week.startDate.toLowerCase().includes(lowerSearch);
+        const nameMatch = week.name ? week.name.toLowerCase().includes(lowerSearch) : false;
+        return startDateMatch || nameMatch;
+      });
+    }
+
+    selectWeek(week: any) {
+      console.log('Selected week:', week);
+      this.loadWeek.emit(week.weekId); 
+      this.searchFlag = false; // Close search mode
+      this.searchText = ''; // Clear search input
+      this.Data={}; 
+
     }
     
     
