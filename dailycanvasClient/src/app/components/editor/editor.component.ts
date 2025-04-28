@@ -139,6 +139,7 @@ export class EditorComponent implements OnInit, OnChanges {
     // Initialize days array to avoid undefined errors
     this.days = [];
     this.currentDayTodos = [];
+    this.remainingChars = this.fontCharLimits[this.editorState['fontSize']]; 
   }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -240,6 +241,10 @@ export class EditorComponent implements OnInit, OnChanges {
   updateState(section: string, value: string): void {
     if (section in this.editorState) {
       this.editorState[section] = value;
+
+      if(section === 'fontSize') {
+        this.remainingChars = this.fontCharLimits[value]; // Update remaining characters based on font size
+      }
     }
   }
 
@@ -266,6 +271,7 @@ export class EditorComponent implements OnInit, OnChanges {
     this.currentDayTodos = [...this.currentDayTodos, newTodo];
     this.saveTodo.emit(newTodo);
     this.newTodoContent = '';
+    this.remainingChars =  this.fontCharLimits[this.editorState['fontSize']]; 
   }
 
   editTodo(todo: Todo): void {
@@ -300,6 +306,7 @@ export class EditorComponent implements OnInit, OnChanges {
     // Emit the update
     this.updateTodo.emit(updatedTodo);
     this.cancelEdit();
+    this.remainingChars = this.fontCharLimits[this.editorState['fontSize']]; // Reset remaining characters
   }
 
   cancelEdit(): void {
