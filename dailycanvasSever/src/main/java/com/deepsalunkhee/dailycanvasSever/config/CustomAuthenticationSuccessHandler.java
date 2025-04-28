@@ -41,15 +41,15 @@ public class CustomAuthenticationSuccessHandler implements AuthenticationSuccess
                 OAuth2RefreshToken refreshToken = authorizedClient.getRefreshToken();
                 if (accessToken != null) {
                     // Redirect with token in the query parameter
-                    response.sendRedirect("http://localhost:4200?provider=" + oauthToken.getAuthorizedClientRegistrationId() +
+                    response.sendRedirect("https://dailycanvas.deepsalunkhee.com?provider=" + oauthToken.getAuthorizedClientRegistrationId() +
                             "&token=" + accessToken.getTokenValue()+ "&refreshToken=" + refreshToken.getTokenValue());
                     return;
                 }
             }
 
-            response.sendRedirect("http://localhost:4200?error=NoTokenFound");
+            response.sendRedirect("https://dailycanvas.deepsalunkhee.com?error=NoTokenFound");
         } else {
-            response.sendRedirect("http://localhost:4200?error=InvalidAuthentication");
+            response.sendRedirect("https://dailycanvas.deepsalunkhee.com?error=InvalidAuthentication");
         }
     }
 }
