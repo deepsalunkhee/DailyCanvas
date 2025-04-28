@@ -53,26 +53,26 @@ interface MenuConfig {
       ])
     ]),
     trigger('strikeThrough', [
-      state('NONE', style({ 
+      state('NONE', style({
         textDecoration: 'none',
         position: 'relative'  // Add this to maintain position
       })),
-      state('null', style({ 
+      state('null', style({
         textDecoration: 'none',
         position: 'relative'  // Add this to maintain position
       })),
-      state('DONE', style({ 
+      state('DONE', style({
         textDecoration: 'line-through',
         'text-decoration-color': 'green',
         'text-decoration-thickness': '2px',
         position: 'relative'  // Add this to maintain position
       })),
-      state('SCRATCHED', style({ 
+      state('SCRATCHED', style({
         textDecoration: 'line-through',
         'text-decoration-color': '{{color}}',
         'text-decoration-thickness': '2px',
         position: 'relative'  // Add this to maintain position
-      }), { params: { color: 'black' }}),
+      }), { params: { color: 'black' } }),
       transition('* => *', [
         animate('0.3s ease-out')
       ])
@@ -88,12 +88,12 @@ export class EditorComponent implements OnInit, OnChanges {
   currentDayIndex: number = 0;
   days: DayData[] = [];
   currentDayTodos: Todo[] = [];
-  
+
   newTodoContent: string = '';
   editingTodoId?: string;
   maxTodos = 20;
-  
-  editorState: {[key: string]: string} = {
+
+  editorState: { [key: string]: string } = {
     mode: 'write',
     actionType: 'done',
     fontColor: 'black',
@@ -120,7 +120,16 @@ export class EditorComponent implements OnInit, OnChanges {
   };
 
   sectionKeys: string[] = ['mode', 'actionType', 'fontColor', 'fontSize'];
+
+  fontCharLimits: { [key: string]: number } = {
+    S: 42, 
+    M: 26,
+    L: 12  
+  };
+
+  remainingChars: number = 0;
   
+
   // Define standard order of days
   private readonly standardDayOrder = [
     'Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'
@@ -135,19 +144,14 @@ export class EditorComponent implements OnInit, OnChanges {
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['weekData'] && changes['weekData'].currentValue) {
       console.log('Week Data in editor:', this.weekData);
-      
+
       // Safely access days array
       if (this.weekData && this.weekData.days && Array.isArray(this.weekData.days)) {
         // Sort days according to standard order (Sunday to Saturday)
         this.sortDaysInOrder();
-        
-        // If this is the initial load, set today as the default day
-        if (changes['weekData'].firstChange) {
-          this.setTodayAsDefaultDay();
-        } else {
-          // Ensure the current todos are updated
-          this.loadCurrentDayTodos();
-        }
+        this.setTodayAsDefaultDay();
+        this.loadCurrentDayTodos();
+
       } else {
         console.error('Invalid weekData structure:', this.weekData);
         this.days = [];
@@ -159,13 +163,13 @@ export class EditorComponent implements OnInit, OnChanges {
   // Sort days in standard Sunday to Saturday order
   sortDaysInOrder(): void {
     if (!this.weekData || !this.weekData.days || !Array.isArray(this.weekData.days)) return;
-    
+
     // Create a map for quick access to day data by day name
     const dayMap = new Map<string, DayData>();
     this.weekData.days.forEach((day: DayData) => {
       dayMap.set(day.day, day);
     });
-    
+
     // Create a new ordered array based on standard day order
     const orderedDays: DayData[] = [];
     this.standardDayOrder.forEach(dayName => {
@@ -174,33 +178,33 @@ export class EditorComponent implements OnInit, OnChanges {
         orderedDays.push(dayData);
       }
     });
-    
+
     // If there are any days not in our standard order, add them at the end
     this.weekData.days.forEach((day: DayData) => {
       if (!this.standardDayOrder.includes(day.day)) {
         orderedDays.push(day);
       }
     });
-    
+
     // Update weekData.days with ordered array
     this.weekData.days = orderedDays;
-    
+
     // Update component's days property
     this.days = orderedDays;
   }
 
   setTodayAsDefaultDay(): void {
     if (!this.days || this.days.length === 0) return;
-    
+
     const today = new Date();
     const dayNames = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
     const todayName = dayNames[today.getDay()];
-    
+
     const todayIndex = this.days.findIndex(day => day.day === todayName);
     if (todayIndex !== -1) {
       this.currentDayIndex = todayIndex;
     }
-    
+
     this.loadCurrentDayTodos();
   }
 
@@ -209,10 +213,12 @@ export class EditorComponent implements OnInit, OnChanges {
       this.currentDayTodos = [];
       return;
     }
-    
+
     const currentDay = this.days[this.currentDayIndex];
     if (currentDay && Array.isArray(currentDay.todos)) {
       this.currentDayTodos = [...currentDay.todos];
+      //sort by position
+      this.currentDayTodos.sort((a, b) => a.position - b.position);
     } else {
       this.currentDayTodos = [];
     }
@@ -244,7 +250,7 @@ export class EditorComponent implements OnInit, OnChanges {
   addTodo(): void {
     if (!this.newTodoContent.trim() || !this.currentDay) return;
     if (this.currentDayTodos.length >= this.maxTodos) return;
-  
+
     const newTodo: Todo = {
       id: `${Date.now().toString()}-${Math.random().toString(36).substr(2, 9)}`,
       dayId: this.currentDay.dayId,
@@ -256,7 +262,7 @@ export class EditorComponent implements OnInit, OnChanges {
       scratchColor: null,
       position: this.currentDayTodos.length
     };
-  
+
     this.currentDayTodos = [...this.currentDayTodos, newTodo];
     this.saveTodo.emit(newTodo);
     this.newTodoContent = '';
@@ -264,7 +270,7 @@ export class EditorComponent implements OnInit, OnChanges {
 
   editTodo(todo: Todo): void {
     if (this.editorState['mode'] !== 'write') return;
-    
+
     this.editingTodoId = todo.id;
     this.newTodoContent = todo.content;
     this.updateState('fontColor', todo.textColor);
@@ -327,7 +333,7 @@ export class EditorComponent implements OnInit, OnChanges {
   trackById(index: number, todo: Todo): string {
     return todo.id || '';
   }
-  
+
   handleTodoClick(todo: Todo): void {
     if (this.editorState['mode'] === 'action') {
       this.applyAction(todo);
@@ -343,15 +349,34 @@ export class EditorComponent implements OnInit, OnChanges {
       actionType: (!todo.actionApplied || todo.actionType === null)
         ? this.editorState['actionType'] === 'done' ? 'DONE' : 'SCRATCHED'
         : null,
-      scratchColor: this.editorState['actionType'] === 'scratch' 
-        ? this.editorState['fontColor'] 
+      scratchColor: this.editorState['actionType'] === 'scratch'
+        ? this.editorState['fontColor']
         : null
     };
-  
-    this.currentDayTodos = this.currentDayTodos.map(item => 
+
+    this.currentDayTodos = this.currentDayTodos.map(item =>
       item.id === todo.id ? updatedTodo : item
     );
-    
+
     this.updateTodo.emit(updatedTodo);
   }
+
+ 
+
+  enforceCharLimit(): void {
+    const fontSize = this.editorState['fontSize'];
+    const limit = this.fontCharLimits[fontSize] || 100; // fallback
+  
+    this.remainingChars = limit - this.newTodoContent.length;
+  
+    // If typed more than limit, trim it
+    if (this.remainingChars < 0) {
+      this.newTodoContent = this.newTodoContent.slice(0, limit);
+      
+    }
+  }
+  
+  
+
+  
 }

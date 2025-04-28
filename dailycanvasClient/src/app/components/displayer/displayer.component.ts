@@ -29,6 +29,8 @@ export class DisplayerComponent implements OnInit,OnChanges {
       if (changes['weekData'] && changes['weekData'].currentValue) {
         this.Data = changes['weekData'].currentValue;
         //console.log("week data from parent", this.Data);
+        
+       
       }
     }
 
@@ -132,6 +134,9 @@ export class DisplayerComponent implements OnInit,OnChanges {
         
         return [...todos, ...emptyTodos];
       }
+
+      //sort by position
+      todos.sort((a, b) => parseInt(a.position, 10) - parseInt(b.position, 10));
       
       return todos;
     }
@@ -147,7 +152,7 @@ export class DisplayerComponent implements OnInit,OnChanges {
         }
       }
       
-      return maxCount || 5; // Default to 5 if no todos exist
+      return Math.max(maxCount , 5); // Default to 5 if no todos exist
     }
     
     

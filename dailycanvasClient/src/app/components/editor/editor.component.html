@@ -1,29 +1,34 @@
 <div class="editor-container">
   <!-- Day navigation slider in a single row -->
   <div class="day-navigator" *ngIf="days && days.length > 0">
-    <button 
-      class="nav-btn prev-btn" 
+    <button
+      class="nav-btn prev-btn"
       (click)="changeDay(-1)"
-      [disabled]="currentDayIndex === 0">
+      [disabled]="currentDayIndex === 0"
+    >
       &lt;
     </button>
-    
+
     <div class="day-indicator">
-      <span class="day-name">{{ currentDay?.day || 'No Day Selected' }}</span>
+      <span class="day-name">{{ currentDay?.day || "No Day Selected" }}</span>
       <div class="day-dots">
-        <span 
-          *ngFor="let day of days; let i = index" 
-          class="day-dot" 
+        <span
+          *ngFor="let day of days; let i = index"
+          class="day-dot"
           [class.active]="i === currentDayIndex"
-          (click)="currentDayIndex = i; loadCurrentDayTodos()">
+          (click)="currentDayIndex = i; loadCurrentDayTodos()"
+        >
         </span>
       </div>
     </div>
-    
-    <button 
-      class="nav-btn next-btn" 
+
+    <button
+      class="nav-btn next-btn"
       (click)="changeDay(1)"
-      [disabled]="days && (currentDayIndex === (days.length - 1) || days.length === 0)">
+      [disabled]="
+        days && (currentDayIndex === days.length - 1 || days.length === 0)
+      "
+    >
       &gt;
     </button>
   </div>
@@ -31,20 +36,21 @@
   <div class="editor-menu">
     <div class="menu-section" *ngFor="let sectionKey of sectionKeys">
       <h4 class="menu-title">
-        {{menuConfig[sectionKey].title}}
+        {{ menuConfig[sectionKey].title }}
       </h4>
       <div class="option-group">
-        <button 
+        <button
           *ngFor="let option of menuConfig[sectionKey].options; let i = index"
-          class="option-btn" 
+          class="option-btn"
           [class.active]="isActive(sectionKey, option)"
           (click)="updateState(sectionKey, option)"
           [ngClass]="{
             'color-option': sectionKey === 'fontColor',
-            'black': sectionKey === 'fontColor' && option === 'black',
-            'blue': sectionKey === 'fontColor' && option === 'blue'
-          }">
-          {{option}}
+            black: sectionKey === 'fontColor' && option === 'black',
+            blue: sectionKey === 'fontColor' && option === 'blue'
+          }"
+        >
+          {{ option }}
         </button>
       </div>
     </div>
@@ -53,11 +59,16 @@
   <div class="todo-editor">
     <!-- Todo input form -->
     <div class="todo-input-container" *ngIf="editorState['mode'] === 'write'">
-      <input 
-        type="text" 
-        [(ngModel)]="newTodoContent" 
+      <input
+        type="text"
+        [(ngModel)]="newTodoContent"
+        (input)="enforceCharLimit()"
         (keyup.enter)="editingTodoId ? updateTodoContent() : addTodo()"
-        [placeholder]="(currentDayTodos && currentDayTodos.length >= maxTodos) ? 'Maximum todos reached' : 'Type your todo here.'"
+        [placeholder]="
+          currentDayTodos && currentDayTodos.length >= maxTodos
+            ? 'Maximum todos reached'
+            : 'Type your todo here.'
+        "
         class="todo-input"
         [ngClass]="{
           'font-s': editorState['fontSize'] === 'S',
@@ -68,7 +79,17 @@
         }"
         [disabled]="currentDayTodos && currentDayTodos.length >= maxTodos"
         autofocus
+      />
+      <div
+        class="char-counter"
+        [ngClass]="{
+          'text-red': remainingChars < 0,
+          'text-normal': remainingChars >= 0
+        }"
       >
+        Remaining: {{ remainingChars }}
+      </div>
+
       <div class="todo-actions" *ngIf="editingTodoId">
         <button (click)="updateTodoContent()" class="save-btn">Save</button>
         <button (click)="cancelEdit()" class="cancel-btn">Cancel</button>
@@ -78,25 +99,44 @@
     <!-- Todo list -->
     <div class="todo-list-container">
       <div class="todo-list">
-        <div *ngFor="let todo of currentDayTodos; trackBy: trackById"
-             [@fadeInOut]
-             [@strikeThrough]="{value: todo.actionType, params: {color: getStrikeColor(todo)}}"
-             [ngClass]="getTodoClasses(todo)"
-             (click)="handleTodoClick(todo)">
-          <span class="todo-content">{{todo.content}}</span>
-          <button class="delete-btn" (click)="deleteTask(todo, $event)">×</button>
+        <div
+          *ngFor="let todo of currentDayTodos; trackBy: trackById"
+          [@fadeInOut]
+          [@strikeThrough]="{
+            value: todo.actionType,
+            params: { color: getStrikeColor(todo) }
+          }"
+          [ngClass]="getTodoClasses(todo)"
+          (click)="handleTodoClick(todo)"
+        >
+          <span class="todo-content">{{ todo.content }}</span>
+          <button class="delete-btn" (click)="deleteTask(todo, $event)">
+            x
+          </button>
         </div>
       </div>
     </div>
 
-    <p class="editor-placeholder" *ngIf="(!currentDayTodos || currentDayTodos.length === 0) && editorState['mode'] === 'write'">
-      Start writing your todo items for {{ currentDay?.day || 'today' }}...
+    <p
+      class="editor-placeholder"
+      *ngIf="
+        (!currentDayTodos || currentDayTodos.length === 0) &&
+        editorState['mode'] === 'write'
+      "
+    >
+      Start writing your todo items for {{ currentDay?.day || "today" }}...
     </p>
-    <p class="editor-placeholder" *ngIf="(!currentDayTodos || currentDayTodos.length === 0) && editorState['mode'] === 'action'">
-      Select items to {{editorState['actionType']}}...
+    <p
+      class="editor-placeholder"
+      *ngIf="
+        (!currentDayTodos || currentDayTodos.length === 0) &&
+        editorState['mode'] === 'action'
+      "
+    >
+      Select items to {{ editorState["actionType"] }}...
     </p>
     <p class="todo-count" *ngIf="currentDayTodos && currentDayTodos.length > 0">
-      {{currentDayTodos.length}}/{{maxTodos}} todos
+      {{ currentDayTodos.length }}/{{ maxTodos }} todos
     </p>
   </div>
 </div>

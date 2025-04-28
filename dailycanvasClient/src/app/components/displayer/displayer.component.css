@@ -120,13 +120,13 @@
   display: flex;
   justify-content: space-between;
   padding: 10px;
-  height: 450px;
+  height: 29rem;
   overflow-y: auto; /* Allow scrolling if the list is too long */
 }
 
 .day-column {
   flex: 1;
-  height: 100%;
+  height: fit-content;
   background: #fcffee6b;
   border-radius: 8px;
   padding: 3px;
@@ -141,6 +141,9 @@
   font-weight: bold;
   text-align: center;
   margin-bottom: 10px;
+  position: sticky;
+  background-color: #faeedec0;
+  border-radius: 5px 0;
 }
 
 .todos-list {
@@ -163,10 +166,11 @@
   font-size: 12px;
   /* These properties ensure equal height cells */
   flex: 1;
-  min-height: 0;
+  min-height: 70px;
   overflow: hidden;
   text-overflow: ellipsis;
   word-wrap: break-word;
+  border-radius: 5px;
 }
 
 .empty-todo {

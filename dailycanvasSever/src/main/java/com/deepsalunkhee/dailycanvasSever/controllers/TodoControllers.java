@@ -1,5 +1,7 @@
 package com.deepsalunkhee.dailycanvasSever.controllers;
 
+import java.util.Comparator;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -135,20 +137,36 @@ public class TodoControllers {
     public void deleteTodo(@RequestBody Map<String, String> request) {
         UUID id = UUID.fromString(request.get("id"));
         logger.info("Deleting Todo with ID: {}", id);
-
+    
         TodoModel todo = todoServices.getTodoById(id);
         if (todo == null) {
             logger.error("Todo not found with ID: {}", id);
             return;
         }
-
-        //update the todo count of the day
+    
+        // Update the todo count of the day
         DayModel day = todo.getDay();
-        day.setTodoCount((day.getTodoCount() - 1));
+        day.setTodoCount(day.getTodoCount() - 1);
         dayServices.updateDay(day.getId(), day);
-
+    
+        // Adjust positions of remaining todos
+        List<TodoModel> todosOfDay = todoServices.getTodosByDayId(day.getId());
+    
+        // Sort todos by position
+        todosOfDay.sort(Comparator.comparingInt(TodoModel::getPosition));
+    
+        int deletedTodoPosition = todo.getPosition();
+    
+        for (TodoModel t : todosOfDay) {
+            if (t.getPosition() > deletedTodoPosition) {
+                t.setPosition(t.getPosition() - 1);
+                todoServices.updateTodo(t.getId(), t); 
+            }
+        }
+    
+        // Finally delete the todo
         todoServices.deleteTodo(id);
         logger.info("Todo deleted successfully with ID: {}", id);
-
     }
+    
 }
