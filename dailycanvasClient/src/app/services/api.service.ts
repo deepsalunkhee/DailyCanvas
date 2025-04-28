@@ -5,7 +5,7 @@ import axios from 'axios';
   providedIn: 'root'
 })
 export class ApiService {
-  private baseUrl = 'http://localhost:8080'; 
+  private baseUrl = 'https://dailycanvasserver.onrender.com'; 
   private token = localStorage.getItem('token');
   private refreshToken = localStorage.getItem('refreshToken');
 
