@@ -14,7 +14,7 @@
 - 🔒 **Authentication**: Sign in with **Google OAuth**.
 - 📝 **Paper-like UI**: A simple, natural writing experience.
 - 🗓️ **Create Weekly Canvas**: Start a fresh canvas for each week.
-- ✅ **Add Todos to Specific Days**: Organize tasks across Monday–Sunday.
+- ✅ **Add Todos to Specific Days**: Organize tasks across Sunday to Saturday.
 - 🖥️ **Full Week Overview**: See your *entire week* at a glance on one screen.
 - ✍️ **Todo Editor**: Add and edit todos easily.
 - 🎯 **Actions on Todos**:
