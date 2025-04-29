@@ -97,11 +97,12 @@ filteredWeeks: any[] = []; // Weeks to show while searching
     
       while (filledTodos.length < 20) {
         filledTodos.push({
-          title: '',
+          content: '',
           textColor: 'black', // Default text color
           fontSize: 'S',      // Default font size
           scratchColor: 'none', // Default scratch color
           actionType: 'NONE', // Default action type
+
         }); // Add empty todos with default values
       }
     
@@ -148,6 +149,8 @@ filteredWeeks: any[] = []; // Weeks to show while searching
           actionType: null,
           scratchColor: null
         });
+
+        todos.sort((a, b) => parseInt(a.position, 10) - parseInt(b.position, 10));
         
         return [...todos, ...emptyTodos];
       }

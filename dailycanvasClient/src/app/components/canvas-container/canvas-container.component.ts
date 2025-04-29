@@ -179,6 +179,10 @@ export class CanvasContainerComponent implements OnInit {
     //update localy
     if (!this.weekData || !Array.isArray((this.weekData as any).days)) return;
 
+    console.log("adding", todo);
+
+    const dummyId=todo.id;
+
     const days = (this.weekData as any).days;
 
     const day = days.find((d: any) => d.dayId === todo.dayId);
@@ -193,6 +197,20 @@ export class CanvasContainerComponent implements OnInit {
     try{
       this.apiService.postData("api/v1/create-todo", todo).then((response) => {
         console.log("Todo created successfully:", response);
+        // updating the dummy id with the real id from the db
+        const newId = response.data.id;
+        const days = (this.weekData as any).days;
+        const day = days.find((d: any) => d.dayId === todo.dayId);
+        if (day) {
+          const index = day.todos.findIndex((t: Todo) => t.id === dummyId);
+          if (index !== -1) {
+            day.todos[index].id = newId; // update the object with the new id
+          } else {
+            console.error("Todo not found to update:", dummyId);
+          }
+        } else {
+          console.error("Day not found for dayId:", todo.dayId);
+        }
       }).catch((error) => {
         console.error("Error creating todo:", error);
       });
