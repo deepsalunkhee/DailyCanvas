@@ -3,6 +3,10 @@
 
  A **weekly-focused Todo application** that lets you plan, visualize, and manage your entire week's tasks — all on a canvas that feels like real paper!
 
+## Demo 
+
+[![Demo](https://img.youtube.com/vi/MawLtozY1a0/0.jpg)](https://www.youtube.com/watch?v=MawLtozY1a0)
+
 
 
 ## ✨ Features
@@ -24,7 +28,7 @@
 
 - **Frontend**: Angular
 - **Authentication**: Google OAuth 2.0
-- **Backend**: Spring Boot (deployed separately)
+- **Backend**: Spring Boot 
 
 
 # 🏁 Summary
