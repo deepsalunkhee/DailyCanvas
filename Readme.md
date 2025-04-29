@@ -19,8 +19,8 @@
 - ✍️ **Todo Editor**: Add and edit todos easily.
 - 🎯 **Actions on Todos**:
   - **Mark as Done**
-  - **Scratch (strike-through)** with blue or green lines
-- 🎨 **Color Options**: Customize your todos in **green** or **blue** colors for better organization.
+  - **Scratch (strike-through)** with blue or black lines
+- 🎨 **Color Options**: Customize your todos in **black** or **blue** colors for better organization.
 
 
 
