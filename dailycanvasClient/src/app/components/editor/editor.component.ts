@@ -243,7 +243,7 @@ export class EditorComponent implements OnInit, OnChanges {
       this.editorState[section] = value;
 
       if(section === 'fontSize') {
-        this.remainingChars = this.fontCharLimits[value]; // Update remaining characters based on font size
+        this.remainingChars = this.fontCharLimits[value]- this.newTodoContent.length; // Reset remaining characters
       }
     }
   }
@@ -271,7 +271,7 @@ export class EditorComponent implements OnInit, OnChanges {
     this.currentDayTodos = [...this.currentDayTodos, newTodo];
     this.saveTodo.emit(newTodo);
     this.newTodoContent = '';
-    this.remainingChars =  this.fontCharLimits[this.editorState['fontSize']]; 
+    this.remainingChars =  this.fontCharLimits[this.editorState['fontSize']]- this.newTodoContent.length; // Reset remaining characters 
   }
 
   editTodo(todo: Todo): void {
@@ -306,7 +306,7 @@ export class EditorComponent implements OnInit, OnChanges {
     // Emit the update
     this.updateTodo.emit(updatedTodo);
     this.cancelEdit();
-    this.remainingChars = this.fontCharLimits[this.editorState['fontSize']]; // Reset remaining characters
+    this.remainingChars = this.fontCharLimits[this.editorState['fontSize']]- this.newTodoContent.length; // Reset remaining characters
   }
 
   cancelEdit(): void {
